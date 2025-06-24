@@ -1,0 +1,202 @@
+﻿@page
+@model SpecShare.Pages.ProfileModel
+@{
+    ViewData["Title"] = "Student Profile";
+    var student = Model.LoggedInStudent;
+}
+
+<style>
+    .profile-container {
+        max-width: 500px;
+        margin: 2rem auto;
+    }
+
+    .profile-card {
+        position: relative;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, #0066ff 0%, #00a3ff 100%);
+        padding: 2rem 2rem 1.5rem;
+        text-align: center;
+        color: white;
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 3px solid white;
+        background-color: #f0f4f8;
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+        .profile-avatar img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+        }
+
+    .profile-details {
+        padding: 1.5rem 2rem;
+    }
+
+    .edit-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: white;
+        color: #0066ff;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        padding: 0.5rem 0.6rem;
+        font-size: 1.1rem;
+        cursor: pointer;
+        z-index: 10;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+
+        .edit-btn:hover {
+            background-color: #e2e6ea;
+        }
+
+    .detail-item {
+        display: flex;
+        margin-bottom: 1.25rem;
+        align-items: center;
+    }
+
+    .detail-label {
+        flex: 0 0 120px;
+        font-weight: 500;
+        color: #4a5568;
+        font-size: 0.9rem;
+    }
+
+    .detail-value {
+        flex: 1;
+        color: #1a202c;
+        font-weight: 500;
+    }
+
+    .profile-actions {
+        display: flex;
+        gap: 1rem;
+        padding: 1.5rem;
+        border-top: 1px solid #edf2f7;
+    }
+
+    .student-name {
+        font-weight: 600;
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .student-meta {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.95rem;
+        margin-bottom: 0;
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-card">
+
+        <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#editProfileModal" title="Edit Profile">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile">
+            </div>
+            <h3 class="student-name">@student.FirstName @student.LastName</h3>
+            <p class="student-meta">@student.Department, Semester @student.Semester</p>
+        </div>
+
+        <div class="profile-details">
+            <div class="detail-item">
+                <span class="detail-label">Enrollment</span>
+                <span class="detail-value">@student.Enrollment</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Email</span>
+                <span class="detail-value">@student.Email</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Department</span>
+                <span class="detail-value">@student.Department</span>
+            </div>
+                
+            <div class="detail-item" style="margin-bottom: 0;">
+                <span class="detail-label">Semester</span>
+                <span class="detail-value">@student.Semester</span>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a asp-page="/Dashboard" class="btn btn-primary flex-grow-1">
+                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+            </a>
+            <a asp-page="/Logout" class="btn btn-outline-danger flex-grow-1">
+                <i class="bi bi-box-arrow-right me-2"></i>Logout
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" asp-page-handler="Edit">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" value="@student.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        <input name="FirstName" class="form-control" value="@student.FirstName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input name="LastName" class="form-control" value="@student.LastName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input name="Email" class="form-control" type="email" value="@student.Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Department</label>
+                        <input name="Department" class="form-control" value="@student.Department" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Semester</label>
+                        <input name="Semester" class="form-control" type="number" value="@student.Semester" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}

@@ -1,0 +1,108 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .login-icon {
+        width: 60px;
+        height: 60px;
+        background-color: rgba(0, 102, 255, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+
+        .login-icon img {
+            width: 30px;
+            height: 30px;
+        }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card p-4 login-container">
+        <div class="login-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/3580/3580148.png" width="128" height="128" alt="Login">
+        </div>
+        <h3 class="text-center mb-4">Login to SpecShare</h3>
+
+        <form method="post" id="loginForm">
+            <div class="mb-3">
+                <label asp-for="LoginStudent.Enrollment" class="form-label">Enrollment Number</label>
+                <input asp-for="LoginStudent.Enrollment"
+                       class="form-control"
+                       type="number"
+                       autocomplete="off"
+                       placeholder="Enter your enrollment number"
+                       required>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LoginStudent.Password" class="form-label">Password</label>
+                <input asp-for="LoginStudent.Password"
+                       class="form-control"
+                       type="password"
+                       placeholder="Enter your password"
+                       required>
+            </div>
+
+            <div class="text-end">
+                <button type="button" class="btn btn-link p-0 text-primary" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                    Forgot Password?
+                </button>
+            </div><br />
+
+            <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </div>
+
+            
+
+        </form>
+    </div>
+</div>
+
+<!-- Success Button (hidden initially) -->
+<div id="goToDashboardWrapper" class="text-center mt-3" style="display: none;">
+    <a href="/Dashboard" class="btn btn-primary">Continue to Dashboard</a>
+</div>
+
+<!-- Login Success Modal -->
+<div class="modal fade" id="loginSuccessModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                <div class="icon-container mx-auto mb-3">
+                    <img src="https://cdn-icons-png.flaticon.com/512/7518/7518748.png" height="128" width="128" alt="Success">
+                </div>
+                <h5 class="mb-3">Login Successful</h5>
+                <p class="text-muted">You can now access your dashboard.</p>
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["LoginSuccess"] is bool loginSuccess && loginSuccess)
+{
+    <script>
+        window.onload = function () {
+            const modal = new bootstrap.Modal(document.getElementById('loginSuccessModal'));
+            modal.show();
+
+            // Auto-close modal and show button
+            setTimeout(() => {
+                modal.hide();
+                document.getElementById("goToDashboardWrapper").style.display = "block";
+            }, 1500);
+        };
+    </script>
+}

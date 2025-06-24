@@ -1,0 +1,219 @@
+﻿@page
+@model DashboardModel
+@using Microsoft.AspNetCore.Http
+@{
+    var isLoggedIn = HttpContext.Session.GetString("IsLoggedIn");
+    var StudentName = HttpContext.Session.GetString("StudentName");
+}
+
+@if (isLoggedIn != "true")
+{
+    <div class="container mt-5">
+        <div class="card mx-auto" style="max-width: 500px;">
+            <div class="card-body text-center p-4">
+                <div class="icon-container mx-auto mb-3">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3580/3580148.png" width="128" height="128" alt="Login Required">
+                </div>
+                <h3 class="mb-3">Login Required</h3>
+                <p class="text-muted mb-4">You must be logged in to view the dashboard.</p>
+                <a class="btn btn-primary w-100" href="/Login">Go to Login Page</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container mt-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title mb-3">Welcome, @StudentName</h2>
+                <p class="text-muted mb-4">Upload and manage your study materials here.</p>
+
+                <div class="d-flex justify-content-end mb-4">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#uploadForm">
+                        Add Document
+                    </button>
+                </div>
+
+                <div class="card collapse mb-4" id="uploadForm">
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="department" class="form-label">Department</label>
+                                    <select id="department" asp-for="departmentCode" class="form-select">
+                                        <option value="" disabled selected>Select Department</option>
+                                        @foreach (var dept in Model.DepartmentsList)
+                                        {
+                                            <option value="@dept.DepartmentCode">@dept.DepartmentName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="semester" class="form-label">Semester</label>
+                                    <select id="semester" asp-for="semester" class="form-select">
+                                        <option value="" disabled selected>Select Semester</option>
+                                        @for (int i = 1; i <= 8; i++)
+                                        {
+                                            <option value="@i">Semester @i</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-3">
+                                <button type="button" id="fetchSubjectsBtn" class="btn btn-outline-secondary">
+                                    Fetch Subjects
+                                </button>
+                                <span id="fetchStatus" class="ms-2 text-success" style="display: none;">
+                                    Subjects loaded
+                                </span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject</label>
+                                <select id="subject" name="subject" class="form-select">
+                                    <option value="" disabled selected>Select Subject</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="material" class="form-label">Material Type</label>
+                                <select id="material" name="material" class="form-select">
+                                    <option value="" disabled selected>Select Material Type</option>
+                                    <option value="syllabus">Syllabus</option>
+                                    <option value="book">Book</option>
+                                    <option value="assignment">Assignment</option>
+                                    <option value="practical">Practical</option>
+                                    <option value="notes">Notes</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="fileUpload" class="form-label">Upload File</label>
+                                <input type="file" name="uploadedFile" id="fileUpload" class="form-control" accept=".pdf,.docx" />
+                                <div class="form-text">Only PDF or DOCX files (Max 10MB)</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" id="title" name="title" class="form-control" placeholder="Document title" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" name="description" class="form-control" rows="3"
+                                      placeholder="Optional description"></textarea>
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Upload Document
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Uploaded Documents Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-primary mb-3">Your Uploaded Documents</h5>
+
+                        @if (Model.UploadedDocuments != null && Model.UploadedDocuments.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-striped align-middle">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>Subject</th>
+                                            <th>Department</th>
+                                            <th>Uploaded</th>
+                                            <th>File</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var doc in Model.UploadedDocuments)
+                                        {
+                                            <tr>
+                                                <td>@doc.Title</td>
+                                                <td>@doc.MaterialType</td>
+                                                <td>@doc.SubjectCode</td>
+                                                <td>@doc.DepartmentCode</td>
+                                                <td>@doc.UploadedOn.ToString("dd MMM yyyy")</td>
+                                                <td>
+                                                    <a href="@Url.Content(doc.FilePath)" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                        View
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <form method="post" asp-page-handler="Delete" asp-route-id="@doc.Id" onsubmit="return confirm('Are you sure you want to delete this document?');">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">You haven't uploaded any documents yet.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('#fetchSubjectsBtn').click(function () {
+                    var departmentCode = $('#department').val();
+                    var semester = $('#semester').val();
+
+                    if (!departmentCode || !semester) {
+                        alert('Please select both department and semester');
+                        return;
+                    }
+
+                    $('#fetchStatus').hide();
+
+                    $.ajax({
+                        url: '?handler=FetchSubjects',
+                        type: 'POST',
+                        data: {
+                            departmentCode: departmentCode,
+                            semester: semester
+                        },
+                        headers: {
+                            "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (data) {
+                            var subjectSelect = $('#subject');
+                            subjectSelect.empty();
+                            subjectSelect.append('<option value="" disabled selected>Select Subject</option>');
+
+                            $.each(data, function (index, item) {
+                                subjectSelect.append($('<option>', {    
+                                    value: item.subjectCode,
+                                    text: item.subjectName
+                                }));
+                            });
+                            $('#fetchStatus').show();
+                        },
+                        error: function () {
+                            alert('Error fetching subjects');
+                        }
+                    });
+                });
+            });
+        </script>
+    }
+}

@@ -1,0 +1,162 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    .register-icon {
+        width: 70px;
+        height: 70px;
+        background-color: rgba(0, 102, 255, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+
+        .register-icon img {
+            width: 35px;
+            height: 35px;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-body p-4">
+                    <div class="register-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Register">
+                    </div>
+                    <h3 class="text-center mb-4">Create Your Account</h3>
+                    <p class="text-muted text-center mb-4">Join SpecShare to access and share academic resources</p>
+
+                    <form method="post" id="registerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="AddStudent.FirstName" class="form-label">First Name</label>
+                                <input asp-for="AddStudent.FirstName"
+                                       type="text"
+                                       class="form-control"
+                                       placeholder="Enter your first name"
+                                       required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="AddStudent.LastName" class="form-label">Last Name</label>
+                                <input asp-for="AddStudent.LastName"
+                                       type="text"
+                                       class="form-control"
+                                       placeholder="Enter your last name"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AddStudent.Enrollment" class="form-label">Enrollment Number</label>
+                            <input asp-for="AddStudent.Enrollment"
+                                   type="number"
+                                   class="form-control"
+                                   placeholder="Enter your enrollment number"
+                                   required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="AddStudent.Department" class="form-label">Department</label>
+                                <select asp-for="AddStudent.Department" class="form-select" required>
+                                    <option value="" disabled selected>Select Department</option>
+                                    @foreach (var dept in Model.DepartmentsList)
+                                    {
+                                        <option value="@dept.DepartmentName">@dept.DepartmentName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="AddStudent.Semester" class="form-label">Semester</label>
+                                <select asp-for="AddStudent.Semester" class="form-select" required>
+                                    <option value="" disabled selected>Select Semester</option>
+                                    @for (int i = 1; i <= 8; i++)
+                                    {
+                                        <option value="@i">Semester @i</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AddStudent.Email" class="form-label">Email</label>
+                            <input asp-for="AddStudent.Email"
+                                   type="email"
+                                   class="form-control"
+                                   placeholder="Enter your email"
+                                   required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="AddStudent.Password" class="form-label">Password</label>
+                                <input asp-for="AddStudent.Password"
+                                       type="password"
+                                       class="form-control"
+                                       placeholder="Create password"
+                                       required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Confirm Password</label>
+                                <input asp-for="ConfirmPassword"
+                                       type="password"
+                                       class="form-control"
+                                       placeholder="Confirm password"
+                                       required>
+                                @if (!string.IsNullOrEmpty(Model.ConfirmPasswordError))
+                                {
+                                    <div class="text-danger small mt-1">@Model.ConfirmPasswordError</div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted small">Already have an account? <a href="/Login" class="text-primary">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for success -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                <div class="icon-container mx-auto mb-3">
+                    <img src="https://cdn-icons-png.flaticon.com/512/7518/7518748.png" alt="Success">
+                </div>
+                <h5 class="mb-3">Registration Successful</h5>
+                <p class="text-muted mb-4">Your account has been created successfully.</p>
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">Continue to Login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["RegisterSuccess"] is bool registerSuccess && registerSuccess)
+{
+    <script>
+        window.onload = function () {
+            const modal = new bootstrap.Modal(document.getElementById('successModal'));
+            modal.show();
+            document.getElementById("registerForm").reset();
+            setTimeout(() => {
+                modal.hide();
+            }, 2000);
+        };
+    </script>
+}

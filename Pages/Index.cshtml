@@ -1,0 +1,132 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home | SpecShare";
+}
+
+<style>
+    :root {
+        --primary: #0066ff;
+        --primary-hover: #0052cc;
+        --text: #2d3748;
+        --text-light: #4a5568;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+    }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+    }
+
+    .card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+    .btn-primary {
+        background-color: var(--primary);
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        padding: 0.5rem 1.25rem;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+    .text-primary {
+        color: var(--primary);
+    }
+
+    .divider {
+        height: 1px;
+        background-color: var(--border);
+        margin: 3rem 0;
+    }
+
+    .icon-container {
+        width: 80px;
+        height: 80px;
+        background-color: rgba(0, 102, 255, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+        .icon-container img {
+            width: 40px;
+            height: 40px;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold mb-3">SpecShare</h1>
+        <p class="text-muted fs-5">
+            Efficient academic resource sharing platform for GTU students
+        </p>
+    </div>
+
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6 order-md-2 mb-4 mb-md-0">
+            <div class="card p-4 h-100">
+                <div class="icon-container mx-auto">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" alt="Materials">
+                </div>
+                <h3 class="text-center mb-3">Browse Materials</h3>
+                <p class="text-center text-muted mb-4">
+                    Filter notes, books, assignments, and practicals by department and semester.
+                </p>
+                <div class="text-center">
+                    <a class="btn btn-primary px-4" href="/Materials">View Materials</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 order-md-1">
+            <div class="card p-4 h-100">
+                <div class="icon-container mx-auto">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4341/4341139.png" alt="Dashboard">
+                </div>
+                <h3 class="text-center mb-3">Dashboard</h3>
+                <p class="text-center text-muted mb-4">
+                    Upload and organize academic resources. Exclusive access for contributors.
+                </p>
+                <div class="text-center">
+                    <a class="btn btn-primary px-4" href="/Dashboard">Access Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="text-center">
+        <h5 class="mb-3">Developed by</h5>
+        <h4 class="text-primary mb-2">Jay Daiya</h4>
+        <p class="text-muted mb-3">Computer Engineering Student | GTU</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="https://www.linkedin.com/in/jaydaiya" target="_blank" class="text-decoration-none text-primary">LinkedIn</a>
+            <span>•</span>
+            <a href="https://github.com/jaydaiya" target="_blank" class="text-decoration-none text-primary">GitHub</a>
+        </div>
+    </div>
+</div>

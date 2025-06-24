@@ -1,0 +1,226 @@
+﻿@page
+@model SpecShare.Pages.AdminModel
+@{
+    var isAuthenticated = Model.IsAuthenticated;
+    var showStudents = Model.ShowStudents;
+}
+
+<h2><strong>Admin Log In</strong></h2>
+
+@if (!isAuthenticated)
+{
+    <form method="post">
+        <label for="adminUsername">Username:</label>
+        <input type="text" id="adminUsername" name="adminUsername" required class="form-control mb-2" placeholder="Enter admin username">
+        <label for="adminPassword">Password:</label>
+        <input type="password" id="adminPassword" name="adminPassword" required class="form-control mb-2" placeholder="Enter admin password">
+        <button type="submit" class="btn btn-primary">Log In</button>
+    </form>
+    @if (Model.LoginFailed)
+    {
+        <div class="alert alert-danger mt-2">Invalid credentials. Please try again.</div>
+    }
+}
+else
+{
+    <div class="row mt-4">
+        <form method="post" class="col-md-3">
+            <input type="hidden" name="action" value="students" />
+            <button type="submit" class="card text-white bg-primary mb-3 btn w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Students</h5>
+                </div>
+            </button>
+        </form>
+
+       
+        <form method="post" class="col-md-3">
+            <input type="hidden" name="action" value="departments" />
+            <button type="submit" class="card text-white bg-success mb-3 btn w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Departments</h5>
+                </div>
+            </button>
+        </form>
+
+
+        <form method="post" class="col-md-3">
+            <input type="hidden" name="action" value="subjects" />
+            <button type="submit" class="card text-white bg-warning mb-3 btn w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Subjects</h5>
+                </div>
+            </button>
+        </form>
+
+        <form method="post" class="col-md-3">
+            <input type="hidden" name="action" value="materials" />
+            <button type="submit" class="card text-white bg-danger mb-3 btn w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Materials</h5>
+                </div>
+            </button>
+        </form>
+
+    </div>
+
+    @if (showStudents && Model.Students != null)
+    {
+        <h4 class="mt-4">Student Records</h4>
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Enrollment</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Semester</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in Model.Students)
+                {
+                    <tr>
+                        <td>@student.Enrollment</td>
+                        <td>@student.FirstName @student.LastName</td>
+                        <td>@student.Department</td>
+                        <td>@student.Semester</td>
+                        <td>@student.Email</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    @if (Model.ShowDepartments && Model.Departments != null)
+    {
+        <h4 class="mt-4">Department Records</h4>
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Department Code</th>
+                    <th>Department Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dept in Model.Departments)
+                {
+                    <tr>
+                        <td>@dept.DepartmentCode</td>
+                        <td>@dept.DepartmentName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    @if (Model.ShowSubjects && Model.Subjects != null)
+    {
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h4>Subject Records</h4>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
+                Add
+            </button>
+        </div>
+
+        <table class="table table-bordered mt-2">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Subject Code</th>
+                    <th>Subject Name</th>
+                    <th>Department ID</th>
+                    <th>Semester</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var subject in Model.Subjects)
+                {
+                    <tr>
+                        <td>@subject.SubjectCode</td>
+                        <td>@subject.SubjectName</td>
+                        <td>@subject.DepartmentId</td>
+                        <td>@subject.Semester</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Add Subject Modal -->
+        <div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addSubjectModalLabel">Add New Subject</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="action" value="addsubject" />
+                            <div class="mb-3">
+                                <label class="form-label">Subject Code</label>
+                                <input type="text" name="SubjectCode" required class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Subject Name</label>
+                                <input type="text" name="SubjectName" required class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Department ID</label>
+                                <input type="number" name="DepartmentId" required class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Semester</label>
+                                <input type="number" name="Semester" required class="form-control" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save Subject</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model.ShowMaterials && Model.Materials != null)
+    {
+        <h4 class="mt-4">Material Records</h4>
+        <table class="table table-bordered">
+            <thead class="table-danger">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Department</th>
+                    <th>Branch</th>
+                    <th>Semester</th>
+                    <th>Subject</th>
+                    <th>Uploaded On</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var material in Model.Materials)
+                {
+                    <tr>
+                        <td>@material.Title</td>
+                        <td>@material.Description</td>
+                        <td>@material.MaterialType</td>
+                        <td>@material.DepartmentCode</td>
+                        <td>@material.BranchCode</td>
+                        <td>@material.Semester</td>
+                        <td>@material.SubjectCode</td>
+                        <td>@material.UploadedOn.ToString("dd-MM-yyyy")</td>
+                        <td>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="deletematerial" />
+                                <input type="hidden" name="MaterialId" value="@material.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+
+}
